@@ -1,0 +1,42 @@
+Ausführungszeit von Programmen oder Funktionen lässt sich mit verschiedenen Methoden vollziehen. Beispielsweise könnte man die Zeit einzelner Fragmente des Programmes, oder auch das gesamte Programm messen.
+
+time() - wird als Kommando vor dem auszuführenden Programm beim Aufruf angeführt "time task1". Es werden drei verschiedene Ergebnisse in Sekunden angezeigt:
+    real - die gesamte tatsächliche Ausführungszeit (elapsed real time)
+    user - die Zeit, die die CPU für (User-)Code benötigt
+    sys -  die Zeit, die die CPU für Kernel-Code benötigt
+
+clock_gettime() -
+    CLOCK_REALTIME
+        - Unixzeit (Sekunden seit 1970 - veränderbar)
+    CLOCK_MONOTONIC
+        - Ticks seit dem Booten (unveränderlich)
+    CLOCK_PROCESS_CPUTIME_ID / CLOCK_THREAD_CPUTIME_ID
+        - Tickt nur, wenn der Prozess/Thread gerade läuft
+    Nachteil:
+        - Bei Thread-Messungen ist der Overhead vom Erstellen und Löschen des Threads dabei
+        - Wenn wirklich nur die Zeit gemessen wird, die der Thread/Prozess braucht (und nicht auf diverse Dinge wartet wie z.B. auf einen Mutex), dann ist die Zeitmessung verfälscht
+
+clock() - liefert die vom Programm bisher benutzte Prozessorzeit
+    Vorteil:
+        - Die Laufzeit von parallelisiertem Code in single-threaded Code umrechnen (wenn es z.B. auf embedded Systeme verwendet werden soll)
+    Nachteil:
+        - Zeit muss durch CLOCKS_PER_SEC dividiert werden (Systemspezifisch)
+        - Wenn zwei Prozesse auf 100% laufen, dann ist es bei 10 Sekunden tatsächlicher Laufzeit 20 Sekunden
+
+
+rdtsc - ist ein Timestamp, der seit dem letzten Reset jeden CPU-Tick tickt (1GHz CPU =  TSC von 10^9 pro Sekunde)
+
+Processor-time: bezeichnet die Zeit, die gebraucht wird, um Anweisungen des Programms zu auszuführen. Diese Zeit beinhaltet keine Wartezeit oder I/O-Operationen.
+
+Wall-Clock-time: berzeichnet die Zeit, die tatsächlich von einem Programm (von Start bis zum Ende) gebraucht wird. Dies beinhaltet unter anderem CPU-Zeit, I/O-Operationen und Verzögerung des Kommunikations-Kanals.
+
+Alternativen zur Zeitmessung:
+    - CPU_PROFILER (Google http://goog-perftools.sourceforge.net/doc/cpu_profiler.html)
+    - GPROF
+    - Valgrind's Callgrind
+
+Tools zur Messung von Speicherverbrauch
+    - direkt "top" ansehen
+    - valgrind
+    - getrusage (http://linux.die.net/man/2/getrusage)
+    - ps -p <pid> -o %mem
