@@ -1,0 +1,39 @@
+Aufgabe:
+    - 32 Tb große Textdatei mit Email-Adressen soll sortiert werden und auf dem Netzwerkdateisystem
+    - Welche Ressourcen braucht man dafür? Laufzeit, Latenz, Arbeitsspeicher etc. argumentieren
+
+getroffene Annahmen:
+    - Glasfaserleitung (1 Gbit/s Datendurchsatz / 125 Mb/s)
+    - Vtrak Ex30 Storage-System (5.5 Gbit/s read | 2.4 Gbit/s write)
+    - Intel Xeon E7-4890 (15 Cores | 2.8 GHz | max. Turbo 3.4 GHz)
+    - 32 GB DDR4 2666 MHz
+
+Berechnungen:
+
+    - Maximale Länge einer Email = 254 chars (http://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address)
+
+    - Minimale Länge einer Email = 3 chars (http://stackoverflow.com/questions/1423195/what-is-the-proper-minimum-length-of-an-email-address-as-defined-by-the-ietf-or)
+
+        - Encoding = UTF-8 (8 Bit)
+        - 1 Byte pro Zeichen der Email-Adresse
+
+        Best-Case (Email-Adresse braucht die volle Anzahl an verfügbaren Chars)
+        - 255 Byte pro Zeile (254 von Email + 1 von Linebreak)
+        - 125 Mb / 255 Byte = ~490 197 Adressen / Sekunde
+
+        Worst-Case (Email-Adresse braucht die minimale Anzahl an verfügbaren Chars)
+        - 4 Byte pro Zeile (3 von Email + 1 von Linebreak)
+        - 125 Mb / 4 Byte = ~31 250 000 Adressen / Sekunde
+
+    - Daten werden in Threads vorsoertiert, damit später das Einfügen schneller geht
+    - Theoretisch gibt es 30 Threads, die vorsortieren können, jedoch nachher warten müssen
+        - Vorsortieren funktioniert mit einem parallelisierten Merge-sort (O(log(n)))
+        - Einfügen in die Zieldatei funktioniert mittels Insertion-sort (O(n))
+        --> O(n * log(n))
+
+    - 32 Tb / 125 Mb = 256000 Sekunden (71 Stunden = Dauer, um die Daten über das Netzwerk zu übertragen)
+
+    256000 * avg(wall clock of time it needs to process 125mb) = Finale Dauer des Vorgangs
+
+Anmerkungen:
+    - falls RAM nicht ausreichen würde, könnte man die Berechnungen auf die Grafikkarte auslagern (ansonsten würde sich der Speicherverbrauch summieren und irgendwann blockieren)
