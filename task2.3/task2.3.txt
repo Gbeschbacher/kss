@@ -1,0 +1,16 @@
+Neue Punkte:
+    - performance.now / performance.timing (in "ms")
+    - console.timeStamp / console.time / console.timeEnd
+    - Timeline API
+    - chrome://tracing
+    - Diff von Snapshots bei Memory-Profiling
+    - console.profile / console.profileEnd
+    - v8 logging (interactive mit gnuplot)
+        - * kennzeichnet Funktionen, die optimiert sind
+
+Diskutieren:
+    - Page-paint time (Was ist es? Wann ist es wichtig?)
+        - chrome://tracing (Ab wann sollte man sich sehr spezifische Performance-Dinge ansehen (use cases)? )
+
+Fun-Punkte:
+    - Latency-Measuring mit 600FPS-Camera
