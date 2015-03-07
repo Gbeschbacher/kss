@@ -151,7 +151,10 @@ auto testSTLHeap(uint32_t nelem) {
         elements[i] = fRand(0.0, 100.0);
     }
 
-    std::make_heap(heap_data, heap_data+nelem);
+    auto comp = [](double const & a, double const & b){
+          return a >= b;
+    };
+    std::make_heap(heap_data, heap_data+nelem, comp);
 
     // run experiment
     auto t = measure<>::execution(
@@ -171,7 +174,7 @@ auto testSTLHeap(uint32_t nelem) {
 int main() {
 
     const unsigned reps = 20; // Why 20?
-    u_int64_t samples[reps];
+    double samples[reps];
 
     for (unsigned i = 100; i <= 10000000; i *= 10) {
         cout << "n\t" << i;
@@ -183,12 +186,12 @@ int main() {
         cout << "\tt_MyHeap\t" << arithmetic_mean(samples, reps);
         cout << "\tdev_MyHeap\t" << sample_standard_deviation(samples, reps);
 
-        // for (unsigned j = 0; j < reps; ++j) {
-        //     samples[j] = testSTLHeap(i);
-        // }
+        for (unsigned j = 0; j < reps; ++j) {
+            samples[j] = testSTLHeap(i);
+        }
 
-        // cout << "\tt_STLHeap\t" << arithmetic_mean(samples, reps);
-        // cout << "\tdev_STLHeap\t" << sample_standard_deviation(samples, reps);
+        cout << "\tt_STLHeap\t" << arithmetic_mean(samples, reps);
+        cout << "\tdev_STLHeap\t" << sample_standard_deviation(samples, reps);
 
         cout << endl;
     }
