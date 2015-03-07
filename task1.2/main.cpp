@@ -47,10 +47,6 @@ double sample_standard_deviation(double* data, uint32_t nelem) {
     return sqrt((1.0/static_cast<double>(nelem-1)) * sum);
 }
 
-
-
-
-
 class Heap {
     public:
         Heap(unsigned n) : elements(0), size(n), data(new double[n]) { }

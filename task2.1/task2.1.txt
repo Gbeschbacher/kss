@@ -1,0 +1,25 @@
+Heap
+    - Contiguous memory
+
+Doubly-Linked List
+    - Pointers
+
+Bitmap
+    - Contiguous memory
+
+Hashmap
+    - Hybrid
+        Linear-Probing - Contiguous memory
+        Seperate-Chaining - Hybrid (Array with pointers)
+
+Contiguous memory (Array):
+    + Konstante Zugriffzeit auf ein Element, wenn der Index bekannt ist - O(1)
+    - Wenn der Index nicht bekannt ist, O(n) Laufzeit bei der Suche
+    - Entfernen oder Einfügen von Element O(n)
+    - Fixe Größe (Resize ist teuer)
+
+Pointers:
+    + Konstante Laufzeit bei Einfügen (Front, Back, insertAfter)
+    + Beliebige Größe ("Resize" ist günstig)
+    - Zugriffszeit auf ein spezifisches Element ist teuer O(n)
+
