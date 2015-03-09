@@ -4,19 +4,32 @@ CONFIG = config.p
 RESULT = results.png
 MAIN = main
 
-all: build2 run clean
+#all: build2 run clean
+
+all: all.NPADS
 
 run:
-	./$(MAIN) > $(SAVE)
+	./$(MAIN) >> $(SAVE)
 
-build: $(FILE)
+buildExtra: $(FILE)
 	$(CXX) --std=c++14 -Wall -Wextra -Werror -Weffc++ -O3 -o $(MAIN) $(FILE)
 
-build2: $(FILE)
-	$(CXX) --std=c++14 -o $(MAIN) $(FILE)
+build: $(FILE)
+	$(CXX) -DNPAD=${ARGS} --std=c++14 -o $(MAIN) $(FILE) \
 
 plot:
 	gnuplot $(CONFIG) > $(RESULT)
 
 clean:
 	rm ./$(MAIN)
+
+n ?= 0
+all.NPADS:
+	n=$(n); \
+	while [ $${n} -lt 32 ] ; do \
+		echo $$n ; \
+		make ARGS=$$n build; \
+		make run; \
+		n=`expr $$n + 1`; \
+	done; \
+	true

@@ -1,11 +1,13 @@
 #include <iostream>
 #include <cmath>
 
-constexpr unsigned NPAD = 0;
+#ifndef NPAD
+#define NPAD 0
+#endif
+
 constexpr unsigned _expStart = 10;
 constexpr unsigned _expEnd = 28;
-
-constexpr unsigned repsPerExp = 20;
+constexpr unsigned repsPerExp = 100;
 
 struct measure {
 
@@ -63,18 +65,22 @@ int main(){
 
   unsigned currentElementIndex = 0;
 
-  std::cout << "Exponent\tCycles / List Element"<<std::endl;
 
   for (unsigned _exp = _expStart; _exp <= _expEnd; ++_exp){
 
+    std::cout << "npad\t" << NPAD;
+    std::cout <<"\texponent\t" << _exp;
+
     unsigned workingSetSize = pow(2, _exp) / sizeof(l);
+
+    for (unsigned i = currentElementIndex; i < workingSetSize; ++i){
+      current->n  = new l();
+      current = current->n;
+    }
+
+    currentElementIndex = workingSetSize;
+
     for(unsigned sampleRun = 0; sampleRun < repsPerExp; ++sampleRun){
-      //std::cout << "NPAD\t" << NPAD;
-      for (unsigned i = currentElementIndex; i < workingSetSize; ++i){
-        current->n  = new l();
-        current = current->n;
-      }
-      currentElementIndex = workingSetSize;
 
       uint64_t time = measure::cycles([&start, &current](){
         current = &start;
@@ -84,13 +90,20 @@ int main(){
       });
 
       samples[sampleRun] = time;
-
     }
-    std::cout << _exp << "\t" <<arithmetic_mean(samples, repsPerExp)/workingSetSize << std::endl;
-    //std::cout << "\t Working Set Size\t" << "2^" << _exp << "\t Cycles/List Element\t" << (time/workingSetSize) << std::endl;
-    //std::cout << "\tMean\t" << measure::arithmetic_mean(samples, repsPerExp) << "\tSSD\t" << measure::sample_standard_deviation(samples, repsPerExp) << std::endl;
+
+    std::cout << "\ttime\t" << arithmetic_mean(samples, repsPerExp)/workingSetSize;
+    std::cout << "\tdeviation\t" << sample_standard_deviation(samples, repsPerExp) << std::endl;
   }
 
+
+  current = start.next;
+  l * next = nullptr;
+  while(current != nullptr){
+    n = current->n;
+    delete current;
+    current = n;
+  }
 
   return EXIT_SUCCESS;
 }
