@@ -11,4 +11,4 @@ plot \
 "data_predefined.dat" using (2**$1):3 with errorlines title "NPAD 7", \
 "data_predefined.dat" using (2**$1):4 with errorlines title "NPAD 15", \
 "data_predefined.dat" using (2**$1):5 with errorlines title "NPAD 31", \
-"data_predefined.dat" using (2**$1):5 with errorlines title "NPAD 63"
+"data_predefined.dat" using (2**$1):6 with errorlines title "NPAD 63"
