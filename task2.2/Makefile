@@ -1,13 +1,13 @@
 FILE = main.cpp
-SAVE = heaps.dat
+SAVE = data.dat
 CONFIG = config.p
 RESULT = results.png
 MAIN = main
 
-all: build run clean
+all: build2 run clean
 
 run:
-	./$(MAIN)
+	./$(MAIN) > $(SAVE)
 
 build: $(FILE)
 	$(CXX) --std=c++14 -Wall -Wextra -Werror -Weffc++ -O3 -o $(MAIN) $(FILE)

@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cmath>
 
-constexpr unsigned NPAD = 24;
+constexpr unsigned NPAD = 0;
 constexpr unsigned _expStart = 10;
-constexpr unsigned _expEnd = 25;
+constexpr unsigned _expEnd = 28;
+
+constexpr unsigned repsPerExp = 20;
 
 struct measure {
 
@@ -22,7 +24,30 @@ struct measure {
       uint64_t y = measure::rdtsc();
       return (y - x);
     }
+
 };
+
+template<typename T>
+double arithmetic_mean(T* data, uint32_t nelem) {
+  double sum = 0.0;
+  for (uint32_t i = 0; i <nelem; ++i) {
+    sum += data[i];
+  }
+  return sum / static_cast<double>(nelem);
+}
+
+template<typename T>
+double sample_standard_deviation(T* data, uint32_t nelem) {
+  double sum = 0.0;
+  double mean = arithmetic_mean(data, nelem);
+
+  for (uint32_t i = 0; i <nelem; ++i) {
+    double diff = data[i]-mean;
+    sum += diff * diff;
+  }
+
+  return sqrt((1.0/static_cast<double>(nelem-1)) * sum);
+}
 
 struct l{
   l * n;
@@ -34,25 +59,36 @@ int main(){
   l start;
   l * current = &start;
 
-  unsigned next_element_index = 0;
+  uint64_t samples[repsPerExp];
+
+  unsigned currentElementIndex = 0;
+
+  std::cout << "Exponent\tCycles / List Element"<<std::endl;
 
   for (unsigned _exp = _expStart; _exp <= _expEnd; ++_exp){
-    std::cout << "NPAD\t" << NPAD;
-    unsigned end_working_set_size = pow(2, _exp);
-    for (unsigned i = next_element_index; i < end_working_set_size; ++i){
-      current->n  = new l();
-      current = current->n;
-    }
-    next_element_index = end_working_set_size;
 
-    uint64_t time = measure::cycles([&start, &current](){
-      current = &start;
-      while (current->n != nullptr){
+    unsigned workingSetSize = pow(2, _exp) / sizeof(l);
+    for(unsigned sampleRun = 0; sampleRun < repsPerExp; ++sampleRun){
+      //std::cout << "NPAD\t" << NPAD;
+      for (unsigned i = currentElementIndex; i < workingSetSize; ++i){
+        current->n  = new l();
         current = current->n;
       }
-    });
+      currentElementIndex = workingSetSize;
 
-    std::cout << "\t Working Set Size\t" << "2^" << _exp << "\t Cycles/List Element\t" << (time/end_working_set_size) << std::endl;
+      uint64_t time = measure::cycles([&start, &current](){
+        current = &start;
+        while (current->n != nullptr){
+          current = current->n;
+        }
+      });
+
+      samples[sampleRun] = time;
+
+    }
+    std::cout << _exp << "\t" <<arithmetic_mean(samples, repsPerExp)/workingSetSize << std::endl;
+    //std::cout << "\t Working Set Size\t" << "2^" << _exp << "\t Cycles/List Element\t" << (time/workingSetSize) << std::endl;
+    //std::cout << "\tMean\t" << measure::arithmetic_mean(samples, repsPerExp) << "\tSSD\t" << measure::sample_standard_deviation(samples, repsPerExp) << std::endl;
   }
 
 
