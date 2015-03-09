@@ -38,19 +38,6 @@ double arithmetic_mean(T* data, uint32_t nelem) {
   return sum / static_cast<double>(nelem);
 }
 
-template<typename T>
-double sample_standard_deviation(T* data, uint32_t nelem) {
-  double sum = 0.0;
-  double mean = arithmetic_mean(data, nelem);
-
-  for (uint32_t i = 0; i <nelem; ++i) {
-    double diff = data[i]-mean;
-    sum += diff * diff;
-  }
-
-  return sqrt((1.0/static_cast<double>(nelem-1)) * sum);
-}
-
 struct l{
   l * n;
   long pad[NPAD];
@@ -82,8 +69,8 @@ int main(){
 
     for(unsigned sampleRun = 0; sampleRun < repsPerExp; ++sampleRun){
 
+      current = &start;
       uint64_t time = measure::cycles([&start, &current](){
-        current = &start;
         while (current->n != nullptr){
           current = current->n;
         }
@@ -92,18 +79,16 @@ int main(){
       samples[sampleRun] = time;
     }
 
-    std::cout << "\ttime\t" << arithmetic_mean(samples, repsPerExp)/workingSetSize;
-    std::cout << "\tdeviation\t" << sample_standard_deviation(samples, repsPerExp) << std::endl;
+    std::cout << "\ttime\t" << arithmetic_mean(samples, repsPerExp)/workingSetSize << std::endl;
   }
 
 
-  current = start.next;
-  l * next = nullptr;
+  current = start.n;
+  l * n = nullptr;
   while(current != nullptr){
     n = current->n;
     delete current;
     current = n;
   }
-
   return EXIT_SUCCESS;
 }
