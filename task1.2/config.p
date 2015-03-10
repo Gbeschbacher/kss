@@ -9,4 +9,4 @@ set logscale x
 
 plot \
 "heaps.dat" using 2:(1000 * $4/$2):(1000 * $6/$2):xticlabel(2) with errorlines title "Lecture heap", \
-"heaps.dat" using 2:(1000 * $8/$2):(1000 * $8/$2):xticlabel(2) with errorlines title "STL heap"
+"heaps.dat" using 2:(1000 * $8/$2):(1000 * $10/$2):xticlabel(2) with errorlines title "STL heap"

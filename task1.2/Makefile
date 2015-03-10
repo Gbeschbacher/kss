@@ -10,7 +10,7 @@ run:
 	./$(MAIN) > $(SAVE)
 
 build: $(FILE)
-	$(CXX) --std=c++14 -Wall -Wextra -Werror -Weffc++ -pedandic  -O3 -o $(MAIN) $(FILE)
+	$(CXX) --std=c++14  -o $(MAIN) $(FILE)
 
 plot:
 	gnuplot $(CONFIG) > $(RESULT)
