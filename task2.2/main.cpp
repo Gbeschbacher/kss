@@ -5,9 +5,9 @@
 #define NPAD 0
 #endif
 
-constexpr unsigned _expStart = 10;
+constexpr unsigned _expStart = 8;
 constexpr unsigned _expEnd = 28;
-constexpr unsigned repsPerExp = 100;
+constexpr unsigned repsPerExp = 500;
 
 struct measure {
 

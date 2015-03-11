@@ -1,13 +1,9 @@
 FILE = main.cpp
-SAVE = data.dat
 CONFIG = config.p
 RESULT = results.png
 MAIN = main
 
-all: NPADS.compact
-
-runNsave:
-	./$(MAIN) >> $(SAVE)
+all: NPADS.compact plot
 
 run:
 	./$(MAIN)
@@ -16,7 +12,7 @@ buildExtra: $(FILE)
 	$(CXX) --std=c++14 -Wall -Wextra -Werror -Weffc++ -O3 -o $(MAIN) $(FILE)
 
 build: $(FILE)
-	$(CXX) -DNPAD=${ARGS} --std=c++14 -o $(MAIN) $(FILE)
+	$(CXX) -DNPAD=${ARGS} --std=c++14 -O3 -o $(MAIN) $(FILE)
 
 plot:
 	gnuplot $(CONFIG) > $(RESULT)
@@ -24,8 +20,10 @@ plot:
 clean.main:
 	rm ./$(MAIN)
 
-clean.data:
-	rm ./$(SAVE)
+clean.dat:
+	rm *.dat
+
+clean: clean.dat clean.main
 
 n ?= 0
 NPADS.all:
@@ -39,8 +37,8 @@ NPADS.all:
 	true
 
 NPADS.compact:
-	for number in 0 7 15 31 63 ; do \
-		make ARGS=$$number build; \
-		make runNsave; \
+	for number in 0 7 15 31 ; do \
+		make ARGS=$$number build --no-print-directory; \
+		./$(MAIN) > $$number.dat --no-print-directory; \
+		make clean.main --no-print-directory; \
 	done;
-	make clean.main
